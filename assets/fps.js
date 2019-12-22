@@ -25,31 +25,26 @@ cc.Class({
         cc.Canvas.instance.node.on(cc.Node.EventType.TOUCH_MOVE, (event) => this._onTouch(event), this)
 
         if (window.DeviceOrientationEvent) {
-            window.addEventListener('orientationchange', (event) => this._onScreenOrientationChangeEvent(event));
             window.addEventListener('deviceorientation', (event) => this._deviceOrientationHandler(event));
         }
     },
 
-    _onScreenOrientationChangeEvent(event) {
-        this.orientation = window.orientation
-    },
-
     _deviceOrientationHandler(event) {
-        let quat = this.cameraNode.quat.fromEuler(cc.v3(event.beta, event.alpha, -event.gamma))
-        let a = Math.sqrt(0.5)
-        quat.mul(cc.quat(-a, 0, 0, a), quat)
+        let euler = cc.v3(event.beta, event.alpha, 0)
+        let quat = this.cameraNode.quat.fromEuler(euler)
+        quat.mul(cc.quat(-Math.sqrt(0.5), 0 ,0, Math.sqrt(0.5)), quat) // - PI/2 around the x-axis
         this.cameraNode.quat = quat
-        console.log(this.cameraNode.quat)
         this.debug.string = `${parseInt(event.alpha)}, ${parseInt(event.beta)}, ${parseInt(event.gamma)}\n
         ${parseInt(this.cameraNode.eulerAngles.x)}, ${parseInt(this.cameraNode.eulerAngles.y)}, ${parseInt(this.cameraNode.eulerAngles.z)}\n`
     },
 
     _onTouch(event) {
-        this.cameraNode.eulerAngles = new cc.v3(
+        let euler = new cc.v3(
             this.cameraNode.eulerAngles.x - (event.getLocation().y - event.getPreviousLocation().y) / 10,
             this.cameraNode.eulerAngles.y + (event.getLocation().x - event.getPreviousLocation().x) / 10,
             0
         )
+        this.cameraNode.quat = this.cameraNode.quat.fromEuler(euler)
     },
 
     start() {
