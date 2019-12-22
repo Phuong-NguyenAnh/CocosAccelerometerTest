@@ -35,13 +35,12 @@ cc.Class({
     },
 
     _deviceOrientationHandler(event) {
-        var zee = cc.v3(0, 0, 1);
         var euler = cc.v3(event.beta, event.alpha, - event.gamma);
         this.debug.string = `${event.alpha}, ${event.beta}, ${event.gamma}`
-        var q1 = cc.quat(- Math.sqrt(0.5), 0, 0, Math.sqrt(0.5)); // - PI/2 around the x-axis
+        var q1 = cc.quat(- 0.5, 0, 0, 0.5); // - PI/2 around the x-axis
         let quat = cc.quat().fromEuler(euler)
         quat.mul(q1, quat) // camera looks out the back of the device, not the top
-        // quat.mul(cc.quat(0, 0, 1, -this.orientation || 0), quat)
+        quat.mul(cc.quat(0, 0, 1, -this.orientation || 0), quat)
         this.cameraNode.quat = quat
     },
 
