@@ -25,11 +25,12 @@ cc.Class({
         cc.Canvas.instance.node.on(cc.Node.EventType.TOUCH_MOVE, (event) => this._onTouch(event), this)
 
         if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', (event) => this._deviceOrientationHandler(event));
+            window.addEventListener('deviceorientation', (event) => this._deviceOrientationHandler(event), false);
         }
     },
 
     _deviceOrientationHandler(event) {
+        console.log(event)
         let euler = cc.v3(event.beta, event.alpha, 0)
         let quat = this.cameraNode.quat.fromEuler(euler)
         quat.mul(cc.quat(-Math.sqrt(0.5), 0 ,0, Math.sqrt(0.5)), quat) // - PI/2 around the x-axis
