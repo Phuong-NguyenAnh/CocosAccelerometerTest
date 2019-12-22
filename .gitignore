@@ -51,8 +51,7 @@ Thumbs.db
 #//////////////////////////
 
 .vscode/
-
-assets/
+*.meta
 settings/
 creator.d.ts
 jsconfig.json
