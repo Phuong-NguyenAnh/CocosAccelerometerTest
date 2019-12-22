@@ -35,12 +35,10 @@ cc.Class({
     },
 
     _deviceOrientationHandler(event) {
-        var euler = cc.v3(event.beta - 90, event.alpha, 0);
-        this.debug.string = `${parseInt(event.alpha)}, ${parseInt(event.beta)}, ${parseInt(event.gamma)}, ${parseInt(this.orientation)}`
-        this.cameraNode.quat =  cc.quat().fromEuler(euler)
-        // var q1 = cc.quat(- Math.sqrt(0.5), 0, 0, Math.sqrt(0.5)); // - PI/2 around the x-axis
-        // quat.mul(q1, quat) // camera looks out the back of the device, not the top
-        // quat.mul(cc.quat(0, 0, 1, -this.orientation || 0), quat)
+        this.cameraNode.eulerAngles = cc.v3(event.beta -90,event.alpha, -event.gamma)
+        this.debug.string = `${parseInt(event.alpha)}, ${parseInt(event.beta)}, ${parseInt(event.gamma)}, ${parseInt(this.orientation)}\n
+        ${parseInt(this.cameraNode.eulerAngles.x)}, ${parseInt(this.cameraNode.eulerAngles.y)}, ${parseInt(this.cameraNode.eulerAngles.z)}\n
+        ${parseInt(this.cameraNode.quat.x)}, ${parseInt(this.cameraNode.quat.y)}, ${parseInt(this.cameraNode.quat.z)}, ${parseInt(this.cameraNode.quat.w)}\n`
     },
 
     _onTouch(event) {
