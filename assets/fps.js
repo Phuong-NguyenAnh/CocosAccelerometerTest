@@ -30,12 +30,7 @@ cc.Class({
     },
 
     _deviceOrientationHandler(event) {
-        let euler = cc.v3(event.beta, event.alpha, 0)
-        let quat = this.cameraNode.quat.fromEuler(euler)
-        quat.mul(cc.quat(-Math.sqrt(0.5), 0 ,0, Math.sqrt(0.5)), quat) // - PI/2 around the x-axis
-        this.cameraNode.quat = quat
-        this.debug.string = `${parseInt(event.alpha)}, ${parseInt(event.beta)}, ${parseInt(event.gamma)}\n
-        ${parseInt(this.cameraNode.eulerAngles.x)}, ${parseInt(this.cameraNode.eulerAngles.y)}, ${parseInt(this.cameraNode.eulerAngles.z)}\n`
+        this.deviceOrientation = event
     },
 
     _onTouch(event) {
@@ -51,5 +46,14 @@ cc.Class({
 
     },
 
-    // update (dt) {},
+    update(dt) {
+        if (this.deviceOrientation) {
+            let euler = cc.v3(this.deviceOrientation.beta, this.deviceOrientation.alpha, -this.deviceOrientation.gamma)
+            let quat = this.cameraNode.quat.fromEuler(euler)
+            quat.mul(cc.quat(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5)), quat) // - PI/2 around the x-axis
+            this.cameraNode.quat = quat
+            this.debug.string = `${parseInt(event.alpha)}, ${parseInt(event.beta)}, ${parseInt(event.gamma)}\n
+            ${parseInt(this.cameraNode.eulerAngles.x)}, ${parseInt(this.cameraNode.eulerAngles.y)}, ${parseInt(this.cameraNode.eulerAngles.z)}\n`
+        }
+    },
 });
