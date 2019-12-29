@@ -12,15 +12,13 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        camera: cc.Camera,
         debug: cc.Label,
     },
 
     // LIFE-CYCLE CALLBACKS:
 
     onLoad() {
-        this.cameraNode = this.camera.node
-        this.cameraNode.x = this.cameraNode.y = this.cameraNode.z = 0
+        this.node.x = this.node.y = this.node.z = 0
 
         cc.Canvas.instance.node.on(cc.Node.EventType.TOUCH_MOVE, (event) => this._onTouch(event), this)
 
@@ -41,16 +39,25 @@ cc.Class({
 
     _onTouch(event) {
         let euler = new cc.v3(
-            this.cameraNode.eulerAngles.x - (event.getLocation().y - event.getPreviousLocation().y) / 10,
-            this.cameraNode.eulerAngles.y + (event.getLocation().x - event.getPreviousLocation().x) / 10,
+            this.node.eulerAngles.x - (event.getLocation().y - event.getPreviousLocation().y) / 10,
+            this.node.eulerAngles.y + (event.getLocation().x - event.getPreviousLocation().x) / 10,
             0
         )
-        this.cameraNode.quat = this.cameraNode.quat.fromEuler(euler)
+        this.node.quat = this.node.quat.fromEuler(euler)
     },
 
     start() {
 
     },
 
-    // update (dt) {},
+    update(dt) {
+        if (this.deviceOrientation) {
+            let euler = cc.v3(this.deviceOrientation.beta, this.deviceOrientation.alpha, -this.deviceOrientation.gamma)
+            let quat = this.node.quat.fromEuler(euler)
+            quat.mul(cc.quat(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5)), quat) // - PI/2 around the x-axis
+            this.node.quat = quat
+            this.debug.string = `${parseInt(event.alpha)}, ${parseInt(event.beta)}, ${parseInt(event.gamma)}\n
+            ${parseInt(this.node.eulerAngles.x)}, ${parseInt(this.node.eulerAngles.y)}, ${parseInt(this.node.eulerAngles.z)}\n`
+        }
+    },
 });
